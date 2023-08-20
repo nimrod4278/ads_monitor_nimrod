@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        - 'ads_alertmanager:9093'
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: 'gaarf'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['gaarf_exporter:8000']
+

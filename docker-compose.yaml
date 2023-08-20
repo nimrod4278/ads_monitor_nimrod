@@ -1,0 +1,79 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: '3'
+
+networks:
+  ads-monitor:
+    driver: bridge
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:main
+    container_name: ads_prometheus
+    networks:
+      - ads-monitor
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ads_grafana
+    networks:
+      - ads-monitor
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_INSTALL_PLUGINS=marcusolsson-treemap-panel
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana_data:/var/lib/grafana
+  gaarf_exporter:
+    build: gaarf_exporter/.
+    image: gaarf_exporter
+    container_name: gaarf_exporter
+    networks:
+      - ads-monitor
+    volumes:
+      - "${GOOGLE_ADS_YAML:-$HOME/google-ads.yaml}:/root/google-ads.yaml"
+    command:
+      - "--account=$GAARF_EXPORTER_ACCOUNT_ID"
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: ads_alertmanager
+    networks:
+      - ads-monitor
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./alertmanager:/config"
+    command: --config.file=/config/alertmanager.yml --log.level=debug
+    restart: unless-stopped
