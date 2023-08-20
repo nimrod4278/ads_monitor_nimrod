@@ -4,7 +4,7 @@
         "skip": true
     },
     "hooks": {
-        "prebuild": {
+        "precreate": {
             "commands": [
                 "./deploy_to_vm.sh"
             ]
