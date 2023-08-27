@@ -7,7 +7,7 @@
     },
     "hooks": {
         "prebuild": {
-          "commands": ["sudo ./deploy_to_vm.sh"]
+          "commands": ["chmod u+x ./deploy_to_vm.sh", "./deploy_to_vm.sh"]
         }
     }
 }   
