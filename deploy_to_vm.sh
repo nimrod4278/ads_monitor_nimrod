@@ -87,6 +87,17 @@ create_env_file() {
 
 copy_files_to_vm() {
     echo "Copying files to remote..."
+    echo "--------------------------"
+    echo $SCRIPT_PATH
+    echo "--------------------------"
+    echo $GOOGLE_ADS_YAML
+    echo "--------------------------"
+    echo $USERNAME
+    echo "--------------------------"
+    echo $INSTANCE_NAME
+    echo "--------------------------"
+    echo "--------------------------"
+    echo "--------------------------"
     gcloud compute scp --recurse "${SCRIPT_PATH}" $USERNAME@$INSTANCE_NAME:/home/$USERNAME/ --zone=$ZONE --project=$PROJECT_ID
     gcloud compute scp --recurse "$GOOGLE_ADS_YAML" $USERNAME@$INSTANCE_NAME:/home/$USERNAME/ --zone=$ZONE --project=$PROJECT_ID
     gcloud compute scp --recurse "${SCRIPT_PATH}/.env" $USERNAME@$INSTANCE_NAME:/home/$USERNAME/ --zone=$ZONE --project=$PROJECT_ID
