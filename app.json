@@ -5,6 +5,9 @@
       "memory": "2048Mi",
       "cpu": "4"
     },
+    "build": {
+        "skip": true
+    },
     "hooks": {
         "prebuild": {
           "commands": ["./deploy_to_vm.sh"]
