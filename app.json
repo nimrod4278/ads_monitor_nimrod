@@ -1,13 +1,13 @@
 {
     "name": "ads-monitor",
-    "build": {
-        "skip": true
+    "options": {
+      "allow-unauthenticated": true,
+      "memory": "2048Mi",
+      "cpu": "4"
     },
     "hooks": {
-        "postcreate": {
-            "commands": [
-                "./deploy_to_vm.sh"
-            ]
+        "prebuild": {
+          "commands": ["./deploy_to_vm.sh"]
         }
     }
-}
+}   
