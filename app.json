@@ -7,7 +7,7 @@
     },
     "hooks": {
         "prebuild": {
-          "commands": ["chmod u+x ./deploy_to_vm.sh", "./deploy_to_vm.sh"]
+          "commands": ["echo \"Setting Project ID: ${GOOGLE_CLOUD_PROJECT}\"", "chmod u+x ./deploy_to_vm.sh", "./deploy_to_vm.sh"]
         }
     }
 }   
